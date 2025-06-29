@@ -2,13 +2,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
-import { FavoriteHeroRepository, MarvelApiRepository } from './infrastructure/database/repositories';
-import { MarvelApiService, PrismaService, RedisService } from './infrastructure/external';
-import { CacheRepository, Repository } from './domain/repositories';
-import { PaginationDto } from './application/dto';
 import { HeroController } from './presentation/controllers';
-import { GetFavoriteHeroesUseCase, GetHeroListUseCase } from './application/use-cases';
-import { RedisCacheRepository } from './infrastructure/database/repositories/cache.repository';
+
+import { FavoriteHeroRepositoryImpl, MarvelApiRepositoryImpl, CacheRepositoryImpl } from './infrastructure/database/repositories';
+import { FavoriteHeroRepository, MarvelApiRepository, CacheRepository } from './domain/repositories';
+import { PrismaService, MarvelApiService, RedisService } from './infrastructure/external';
+
+import {
+  DeleteFavoriteHeroUseCase,
+  GetFavoriteHeroesUseCase,
+  GetHeroListUseCase,
+  SaveFavoriteHeroUseCase,
+} from './application/use-cases';
 
 @Module({
   imports: [
@@ -49,29 +54,42 @@ import { RedisCacheRepository } from './infrastructure/database/repositories/cac
     },
     {
       provide: 'FavoriteHeroRepository',
-      useFactory: (prismaService: PrismaService) => new FavoriteHeroRepository(prismaService),
+      useFactory: (prismaService: PrismaService) => new FavoriteHeroRepositoryImpl(prismaService),
       inject: [PrismaService],
     },
     {
       provide: 'MarvelApiRepository',
-      useFactory: (marvelApiService: MarvelApiService) => new MarvelApiRepository(marvelApiService),
+      useFactory: (marvelApiService: MarvelApiService) => new MarvelApiRepositoryImpl(marvelApiService),
       inject: [MarvelApiService],
     },
     {
       provide: 'CacheRepository',
-      useFactory: (redisService: RedisService) => new RedisCacheRepository(redisService),
+      useFactory: (redisService: RedisService) => new CacheRepositoryImpl(redisService),
       inject: [RedisService],
     },
     {
       provide: GetHeroListUseCase,
-      useFactory: (marvelApiRepository: Repository<PaginationDto>, cache: CacheRepository) => new GetHeroListUseCase(marvelApiRepository, cache),
+      useFactory: (marvelApiRepository: MarvelApiRepository, cache: CacheRepository) => new GetHeroListUseCase(marvelApiRepository, cache),
       inject: ['MarvelApiRepository', 'CacheRepository'],
     },
     {
       provide: GetFavoriteHeroesUseCase,
       useFactory: (favoriteHeroRepository: FavoriteHeroRepository) => new GetFavoriteHeroesUseCase(favoriteHeroRepository),
       inject: ['FavoriteHeroRepository'],
-    }
+    },
+    {
+      provide: SaveFavoriteHeroUseCase,
+      useFactory: (
+        favoriteHeroRepository: FavoriteHeroRepository,
+        marvelApiRepository: MarvelApiRepository,
+      ) => new SaveFavoriteHeroUseCase(favoriteHeroRepository, marvelApiRepository),
+      inject: ['FavoriteHeroRepository', 'MarvelApiRepository'],
+    },
+    {
+      provide: DeleteFavoriteHeroUseCase,
+      useFactory: (favoriteHeroRepository: FavoriteHeroRepository) => new DeleteFavoriteHeroUseCase(favoriteHeroRepository),
+      inject: ['FavoriteHeroRepository'],
+    },
   ],
 })
 export class AppModule { }

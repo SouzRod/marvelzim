@@ -1,10 +1,10 @@
-import { CacheRepository, Repository } from "src/domain/repositories";
+import { CacheRepository, MarvelApiRepository } from "src/domain/repositories";
 import { Hero } from "src/domain/entities";
 import { PaginationDto } from "../dto";
 
 export class GetHeroListUseCase {
   constructor(
-    private readonly marvelApiRepository: Repository<PaginationDto>,
+    private readonly marvelApiRepository: MarvelApiRepository,
     private readonly cache: CacheRepository,
   ) {}
 

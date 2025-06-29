@@ -1,7 +1,7 @@
 import { CacheRepository } from 'src/domain/repositories';
 import { RedisService } from 'src/infrastructure/external';
 
-export class RedisCacheRepository implements CacheRepository {
+export class CacheRepositoryImpl implements CacheRepository {
   constructor(private readonly redisService: RedisService) {}
 
   async get(key: string) {

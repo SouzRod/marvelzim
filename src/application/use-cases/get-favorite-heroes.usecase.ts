@@ -1,5 +1,5 @@
 import { Hero } from "src/domain/entities";
-import { FavoriteHeroRepository } from "src/infrastructure/database/repositories";
+import { FavoriteHeroRepository } from "src/domain/repositories";
 
 export class GetFavoriteHeroesUseCase {
   constructor(

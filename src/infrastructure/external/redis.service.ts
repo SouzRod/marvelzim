@@ -5,13 +5,8 @@ import Redis, { RedisOptions } from 'ioredis';
 export class RedisService {
   private readonly client: Redis;
 
-  constructor(options?: RedisOptions) {
-    this.client = new Redis(
-      options || {
-        host: 'localhost',
-        port: 6379,
-      },
-    );
+  constructor(options: RedisOptions) {
+    this.client = new Redis(options);
   }
 
   async get(key: string): Promise<string | null> {
