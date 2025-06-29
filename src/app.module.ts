@@ -3,11 +3,12 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
 import { FavoriteHeroRepository, MarvelApiRepository } from './infrastructure/database/repositories';
-import { MarvelApiService, PrismaService } from './infrastructure/external';
-import { Repository } from './domain/repositories';
+import { MarvelApiService, PrismaService, RedisService } from './infrastructure/external';
+import { CacheRepository, Repository } from './domain/repositories';
 import { PaginationDto } from './application/dto';
 import { HeroController } from './presentation/controllers';
 import { GetFavoriteHeroesUseCase, GetHeroListUseCase } from './application/use-cases';
+import { RedisCacheRepository } from './infrastructure/database/repositories/cache.repository';
 
 @Module({
   imports: [
@@ -23,6 +24,16 @@ import { GetFavoriteHeroesUseCase, GetHeroListUseCase } from './application/use-
   controllers: [HeroController],
   providers: [
     PrismaService,
+    {
+      provide: RedisService,
+      useFactory: (configService: ConfigService) =>
+        new RedisService({
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+          password: configService.get('REDIS_PASSWORD'),
+        }),
+      inject: [ConfigService],
+    },
     {
       provide: MarvelApiService,
       useFactory: (
@@ -47,9 +58,14 @@ import { GetFavoriteHeroesUseCase, GetHeroListUseCase } from './application/use-
       inject: [MarvelApiService],
     },
     {
+      provide: 'CacheRepository',
+      useFactory: (redisService: RedisService) => new RedisCacheRepository(redisService),
+      inject: [RedisService],
+    },
+    {
       provide: GetHeroListUseCase,
-      useFactory: (marvelApiRepository: Repository<PaginationDto>) => new GetHeroListUseCase(marvelApiRepository),
-      inject: ['MarvelApiRepository'],
+      useFactory: (marvelApiRepository: Repository<PaginationDto>, cache: CacheRepository) => new GetHeroListUseCase(marvelApiRepository, cache),
+      inject: ['MarvelApiRepository', 'CacheRepository'],
     },
     {
       provide: GetFavoriteHeroesUseCase,
