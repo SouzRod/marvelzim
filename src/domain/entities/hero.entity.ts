@@ -4,5 +4,5 @@ export class Hero {
     public name: string,
     public description: string,
     public thumbnail: string,
-  ) { }
+  ) {}
 }

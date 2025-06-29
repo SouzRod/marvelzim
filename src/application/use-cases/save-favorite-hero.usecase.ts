@@ -1,5 +1,5 @@
-import { FavoriteHeroRepository } from "src/domain/repositories/favorite-hero.repository";
-import { MarvelApiRepository } from "src/domain/repositories/marvel-api.repository";
+import { FavoriteHeroRepository } from 'src/domain/repositories/favorite-hero.repository';
+import { MarvelApiRepository } from 'src/domain/repositories/marvel-api.repository';
 
 export class SaveFavoriteHeroUseCase {
   constructor(

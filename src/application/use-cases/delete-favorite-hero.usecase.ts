@@ -1,9 +1,7 @@
-import { FavoriteHeroRepository } from "src/domain/repositories";
+import { FavoriteHeroRepository } from 'src/domain/repositories';
 
 export class DeleteFavoriteHeroUseCase {
-  constructor(
-    private readonly favoriteHeroRepository: FavoriteHeroRepository,
-  ) {}
+  constructor(private readonly favoriteHeroRepository: FavoriteHeroRepository) {}
 
   async execute(heroId: string): Promise<void> {
     const existingHero = await this.favoriteHeroRepository.findById(heroId);

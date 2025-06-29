@@ -1,6 +1,6 @@
-import { CacheRepository, MarvelApiRepository } from "src/domain/repositories";
-import { Hero } from "src/domain/entities";
-import { PaginationDto } from "../dto";
+import { CacheRepository, MarvelApiRepository } from 'src/domain/repositories';
+import { Hero } from 'src/domain/entities';
+import { PaginationDto } from '../dto';
 
 export class GetHeroListUseCase {
   constructor(
@@ -12,7 +12,7 @@ export class GetHeroListUseCase {
     const cacheKey = `hero_list_${pagination.offset}_${pagination.limit}`;
     const cached = await this.cache.get(cacheKey);
     if (cached) {
-      return JSON.parse(cached);
+      return JSON.parse(cached) as Hero[];
     }
 
     const heroes = await this.marvelApiRepository.findAll(pagination);

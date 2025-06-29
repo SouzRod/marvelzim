@@ -1,9 +1,9 @@
-import { FavoriteHeroRepository } from "src/domain/repositories";
-import { PrismaService } from "src/infrastructure/external";
-import { Hero } from "src/domain/entities";
+import { FavoriteHeroRepository } from 'src/domain/repositories';
+import { PrismaService } from 'src/infrastructure/external';
+import { Hero } from 'src/domain/entities';
 
 export class FavoriteHeroRepositoryImpl implements FavoriteHeroRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(): Promise<Hero[]> {
     return await this.prismaService.favoriteHero.findMany();

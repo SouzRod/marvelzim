@@ -8,19 +8,14 @@ import { FavoriteHeroRepositoryImpl, MarvelApiRepositoryImpl, CacheRepositoryImp
 import { FavoriteHeroRepository, MarvelApiRepository, CacheRepository } from './domain/repositories';
 import { PrismaService, MarvelApiService, RedisService } from './infrastructure/external';
 
-import {
-  DeleteFavoriteHeroUseCase,
-  GetFavoriteHeroesUseCase,
-  GetHeroListUseCase,
-  SaveFavoriteHeroUseCase,
-} from './application/use-cases';
+import { DeleteFavoriteHeroUseCase, GetFavoriteHeroesUseCase, GetHeroListUseCase, SaveFavoriteHeroUseCase } from './application/use-cases';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     HttpModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         baseURL: configService.get('MARVEL_BASE_URL') as string,
       }),
       inject: [ConfigService],
@@ -41,15 +36,13 @@ import {
     },
     {
       provide: MarvelApiService,
-      useFactory: (
-        httpService: HttpService,
-        configService: ConfigService,
-      ) => new MarvelApiService(
-        httpService,
-        configService.get('MARVEL_API_KEY') as string,
-        configService.get('MARVEL_HASH') as string,
-        configService.get('MARVEL_TS') as string,
-      ),
+      useFactory: (httpService: HttpService, configService: ConfigService) =>
+        new MarvelApiService(
+          httpService,
+          configService.get('MARVEL_API_KEY') as string,
+          configService.get('MARVEL_HASH') as string,
+          configService.get('MARVEL_TS') as string,
+        ),
       inject: [HttpService, ConfigService],
     },
     {
@@ -79,10 +72,8 @@ import {
     },
     {
       provide: SaveFavoriteHeroUseCase,
-      useFactory: (
-        favoriteHeroRepository: FavoriteHeroRepository,
-        marvelApiRepository: MarvelApiRepository,
-      ) => new SaveFavoriteHeroUseCase(favoriteHeroRepository, marvelApiRepository),
+      useFactory: (favoriteHeroRepository: FavoriteHeroRepository, marvelApiRepository: MarvelApiRepository) =>
+        new SaveFavoriteHeroUseCase(favoriteHeroRepository, marvelApiRepository),
       inject: ['FavoriteHeroRepository', 'MarvelApiRepository'],
     },
     {
@@ -92,4 +83,4 @@ import {
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

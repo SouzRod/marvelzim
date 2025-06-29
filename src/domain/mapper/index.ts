@@ -1,1 +1,1 @@
-export * from "./hero.mapper";
+export * from './hero.mapper';

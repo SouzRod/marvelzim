@@ -1,5 +1,4 @@
-import { PaginationDto } from "src/application/dto/pagination.dto";
-import { Hero } from "../entities";
+import { Hero } from '../entities';
 
 export interface FavoriteHeroRepository {
   findAll(): Promise<Hero[]>;

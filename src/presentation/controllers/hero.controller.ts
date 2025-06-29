@@ -1,8 +1,12 @@
-import { Controller, Delete, Get, Post, Query } from "@nestjs/common";
-import { PaginationDto } from "src/application/dto";
-import { DeleteFavoriteHeroUseCase, GetHeroListUseCase, SaveFavoriteHeroUseCase } from "src/application/use-cases";
-import { GetFavoriteHeroesUseCase } from "src/application/use-cases/get-favorite-heroes.usecase";
-import { Hero } from "src/domain/entities";
+import { Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { PaginationDto } from 'src/application/dto';
+import {
+  DeleteFavoriteHeroUseCase,
+  GetFavoriteHeroesUseCase,
+  GetHeroListUseCase,
+  SaveFavoriteHeroUseCase,
+} from 'src/application/use-cases';
+import { Hero } from 'src/domain/entities';
 
 @Controller('v1/marvel')
 export class HeroController {
@@ -11,7 +15,7 @@ export class HeroController {
     private readonly getFavoriteHeroesUseCase: GetFavoriteHeroesUseCase,
     private readonly saveFavoriteHeroUseCase: SaveFavoriteHeroUseCase,
     private readonly deleteFavoriteHeroUseCase: DeleteFavoriteHeroUseCase,
-  ) { }
+  ) {}
 
   @Get('heroes')
   async getHeroes(@Query() pagination: PaginationDto): Promise<Hero[]> {
