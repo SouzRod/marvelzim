@@ -3,11 +3,11 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
 import { FavoriteHeroRepository, MarvelApiRepository } from './infrastructure/database/repositories';
-import { GetHeroListUseCase } from './application/use-cases/get-hero-list.usecase';
 import { MarvelApiService, PrismaService } from './infrastructure/external';
 import { Repository } from './domain/repositories';
 import { PaginationDto } from './application/dto';
 import { HeroController } from './presentation/controllers';
+import { GetFavoriteHeroesUseCase, GetHeroListUseCase } from './application/use-cases';
 
 @Module({
   imports: [
@@ -50,6 +50,11 @@ import { HeroController } from './presentation/controllers';
       provide: GetHeroListUseCase,
       useFactory: (marvelApiRepository: Repository<PaginationDto>) => new GetHeroListUseCase(marvelApiRepository),
       inject: ['MarvelApiRepository'],
+    },
+    {
+      provide: GetFavoriteHeroesUseCase,
+      useFactory: (favoriteHeroRepository: FavoriteHeroRepository) => new GetFavoriteHeroesUseCase(favoriteHeroRepository),
+      inject: ['FavoriteHeroRepository'],
     }
   ],
 })
