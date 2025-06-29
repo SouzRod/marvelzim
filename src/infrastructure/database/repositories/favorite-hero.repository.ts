@@ -6,12 +6,6 @@ export class FavoriteHeroRepository implements Repository {
   constructor(private readonly prismaService: PrismaService) { }
 
   async findAll(): Promise<Hero[]> {
-    const heroes = await this.prismaService.favoriteHero.findMany();
-    return heroes.map(heroData => new Hero(
-      heroData.id,
-      heroData.name,
-      heroData.description || "",
-      heroData.thumbnail || "",
-    ));
+    return await this.prismaService.favoriteHero.findMany();
   }
 }

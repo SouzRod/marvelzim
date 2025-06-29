@@ -1,7 +1,7 @@
 import { Hero } from "../entities";
 
 export class HeroMapper {
-  static fromPrisma(heroData: any): Hero {
+  static fromMarvelApi(heroData: any): Hero {
     return new Hero(
       heroData.id,
       heroData.name,

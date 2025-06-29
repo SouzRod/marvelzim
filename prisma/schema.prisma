@@ -17,6 +17,6 @@ datasource db {
 model FavoriteHero {
   id          Int     @id
   name        String
-  description String?
-  thumbnail   String?
+  description String
+  thumbnail   String
 }

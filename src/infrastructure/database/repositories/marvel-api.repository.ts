@@ -9,6 +9,6 @@ export class MarvelApiRepository implements Repository<PaginationDto> {
 
   async findAll({ offset, limit }: PaginationDto): Promise<Hero[]> {
     const heroes = await this.marvelApiService.searchHeroes(offset, limit);
-    return heroes.map(HeroMapper.fromPrisma);
+    return heroes.map(HeroMapper.fromMarvelApi);
   }
 }
