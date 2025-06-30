@@ -1,98 +1,164 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# MarvelZim API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API RESTful para consulta de heróis da Marvel, favoritos e cache, construída com NestJS, Prisma, Redis e PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Sumário
+- [Descrição](#descrição)
+- [Rotas da API](#rotas-da-api)
+- [Exemplos de Retorno](#exemplos-de-retorno)
+- [Como rodar o projeto](#como-rodar-o-projeto)
+- [Dependências principais](#dependências-principais)
+- [Estrutura dos dados](#estrutura-dos-dados)
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Descrição
+Este projeto expõe endpoints para listar heróis da Marvel, salvar/remover favoritos e consultar favoritos, utilizando cache Redis e persistência em PostgreSQL. O projeto segue arquitetura limpa, separando domínio, aplicação, infraestrutura e apresentação.
 
-## Project setup
+---
 
-```bash
-$ npm install
+## Rotas da API
+
+### Listar heróis (com paginação)
+`GET /v1/marvel/heroes?offset=0&limit=10`
+
+### Listar heróis favoritos
+`GET /v1/marvel/heroes/favorites`
+
+### Adicionar herói aos favoritos
+`POST /v1/marvel/hero/favorite?id=1`
+
+### Remover herói dos favoritos
+`DELETE /v1/marvel/hero/favorite?id=1`
+
+---
+
+## Exemplos de Retorno
+
+### Listar heróis
+```json
+[
+  {
+    "id": 1,
+    "name": "Homem de Ferro",
+    "description": "Gênio, bilionário, playboy, filantropo.",
+    "thumbnail": "https://url-da-imagem.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Capitão América",
+    "description": "O primeiro vingador.",
+    "thumbnail": "https://url-da-imagem.jpg"
+  }
+]
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+### Listar favoritos
+```json
+[
+  {
+    "id": 2,
+    "name": "Capitão América",
+    "description": "O primeiro vingador.",
+    "thumbnail": "https://url-da-imagem.jpg"
+  }
+]
 ```
 
-## Run tests
+### Adicionar/Remover favorito
+- **POST** e **DELETE** retornam `204 No Content` em caso de sucesso.
 
+---
+
+## Como rodar o projeto
+
+### Pré-requisitos
+- Node.js >= 18
+- Docker e Docker Compose (opcional, mas recomendado)
+
+### 1. Clonar o repositório
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+git clone <repo-url>
+cd marvelzim
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 2. Instalar dependências
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 3. Configurar variáveis de ambiente
+Edite o arquivo `.env` conforme necessário (veja variáveis em `docker-compose.yml`).
 
-## Resources
+### 4. Subir infraestrutura (Postgres + Redis) com Docker
+```bash
+docker-compose up -d
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 5. Rodar as migrations do banco
+```bash
+npm run migrate
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 6. Rodar o projeto
+- **Desenvolvimento:**
+  ```bash
+  npm run start:dev
+  ```
+- **Produção:**
+  ```bash
+  npm run start:prod
+  ```
+- **Via Docker:**
+  ```bash
+  docker-compose up --build
+  ```
 
-## Support
+### 7. Rodar testes
+```bash
+npm test
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## Dependências principais
+- **@nestjs/core**: Framework principal Node.js
+- **@prisma/client**: ORM para PostgreSQL
+- **ioredis**: Cliente Redis
+- **axios**: Requisições HTTP
+- **jest**: Testes unitários
+- **supertest**: Testes de integração
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## Estrutura dos dados
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Hero
+```ts
+class Hero {
+  id: number;
+  name: string;
+  description: string;
+  thumbnail: string;
+}
+```
+
+### PaginationDto
+```ts
+interface PaginationDto {
+  offset: string;
+  limit: string;
+}
+```
+
+---
+
+## Observações
+- O cache de listagem de heróis é feito por chave composta de offset/limit.
+- Favoritos são persistidos no banco e expostos via endpoint dedicado.
+- O projeto segue boas práticas de arquitetura e testes automatizados.
+
+---
+
+## Autor
+- Projeto base em NestJS adaptado por Rodrigo
